@@ -19,7 +19,7 @@ export default defineConfig({
     open: true,
   },
   build: {
-    outDir: 'build', // CRA default output directory
+    outDir: 'dist', // Standard Vite output directory
   },
   test: {
     globals: true,
