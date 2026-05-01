@@ -9,6 +9,9 @@ export default defineConfig({
     react(),
     envCompatible({ prefix: 'REACT_APP', mountedPath: 'process.env' })
   ],
+  define: {
+    'process.env': process.env
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
