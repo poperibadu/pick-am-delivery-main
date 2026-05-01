@@ -1,0 +1,224 @@
+﻿
+> frontend@0.1.0 test
+> craco test --watchAll=false
+
+node.exe : PASS src/__tests__/env.test.js
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Users\NESTLE\AppData\Roaming ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (PASS src/__tests__/env.test.js:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  ΓùÅ Console
+
+    console.error
+      ΓòöΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓò
+ÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòù
+      Γòæ   Pick-Am: Missing Environment Variables  Γòæ
+      ΓòÜΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓò
+ÉΓòÉΓòÉΓòÉΓòÉΓòÉΓò¥
+      
+      1 required variable(s) are not set:
+      
+        Γ£ù REACT_APP_SUPABASE_URL
+          ΓåÆ Supabase Project URL
+          ΓåÆ Found in: Supabase Dashboard ΓåÆ Settings ΓåÆ API ΓåÆ Project URL
+      
+      Create a .env file in the project root with these values.
+      See .env.example for a template.
+
+    [0m [90m 81 |[39m       [36mreturn[39m[33m;[39m
+     [90m 82 |[39m     }
+    [31m[1m>[22m[39m[90m 83 |[39m     originalError([33m...[39margs)[33m;[39m
+     [90m    |[39m     [31m[1m^[22m[39m
+     [90m 84 |[39m   }[33m;[39m
+     [90m 85 |[39m })[33m;[39m
+     [90m 86 |[39m afterAll(() [33m=>[39m {[0m
+
+      at console.error (src/setupTests.js:83:5)
+      at validateEnv (src/lib/env.js:53:11)
+      at src/__tests__/env.test.js:38:29
+      at Object.<anonymous> (node_modules/expect/build/toThrowMatchers.js:83:11)
+      at Object.toThrow (node_modules/expect/build/index.js:382:21)
+      at Object.<anonymous> (src/__tests__/env.test.js:38:33)
+
+    console.error
+      ΓòöΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓò
+ÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòù
+      Γòæ   Pick-Am: Missing Environment Variables  Γòæ
+      ΓòÜΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓò
+ÉΓòÉΓòÉΓòÉΓòÉΓòÉΓò¥
+      
+      1 required variable(s) are not set:
+      
+        Γ£ù REACT_APP_SUPABASE_ANON_KEY
+          ΓåÆ Supabase Anon Key
+          ΓåÆ Found in: Supabase Dashboard ΓåÆ Settings ΓåÆ API ΓåÆ anon/public key
+      
+      Create a .env file in the project root with these values.
+      See .env.example for a template.
+
+    [0m [90m 81 |[39m       [36mreturn[39m[33m;[39m
+     [90m 82 |[39m     }
+    [31m[1m>[22m[39m[90m 83 |[39m     originalError([33m...[39margs)[33m;[39m
+     [90m    |[39m     [31m[1m^[22m[39m
+     [90m 84 |[39m   }[33m;[39m
+     [90m 85 |[39m })[33m;[39m
+     [90m 86 |[39m afterAll(() [33m=>[39m {[0m
+
+      at console.error (src/setupTests.js:83:5)
+      at validateEnv (src/lib/env.js:53:11)
+      at src/__tests__/env.test.js:46:29
+      at Object.<anonymous> (node_modules/expect/build/toThrowMatchers.js:83:11)
+      at Object.toThrow (node_modules/expect/build/index.js:382:21)
+      at Object.<anonymous> (src/__tests__/env.test.js:46:33)
+
+    console.error
+      ΓòöΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓò
+ÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòù
+      Γòæ   Pick-Am: Missing Environment Variables  Γòæ
+      ΓòÜΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓò
+ÉΓòÉΓòÉΓòÉΓòÉΓòÉΓò¥
+      
+      1 required variable(s) are not set:
+      
+        Γ£ù REACT_APP_PAYSTACK_PUBLIC_KEY
+          ΓåÆ Paystack Public Key
+          ΓåÆ Found in: Paystack Dashboard ΓåÆ Settings ΓåÆ API Keys & Webhooks
+      
+      Create a .env file in the project root with these values.
+      See .env.example for a template.
+
+    [0m [90m 81 |[39m       [36mreturn[39m[33m;[39m
+     [90m 82 |[39m     }
+    [31m[1m>[22m[39m[90m 83 |[39m     originalError([33m...[39margs)[33m;[39m
+     [90m    |[39m     [31m[1m^[22m[39m
+     [90m 84 |[39m   }[33m;[39m
+     [90m 85 |[39m })[33m;[39m
+     [90m 86 |[39m afterAll(() [33m=>[39m {[0m
+
+      at console.error (src/setupTests.js:83:5)
+      at validateEnv (src/lib/env.js:53:11)
+      at src/__tests__/env.test.js:54:29
+      at Object.<anonymous> (node_modules/expect/build/toThrowMatchers.js:83:11)
+      at Object.toThrow (node_modules/expect/build/index.js:382:21)
+      at Object.<anonymous> (src/__tests__/env.test.js:54:33)
+
+    console.error
+      ΓòöΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓò
+ÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòù
+      Γòæ   Pick-Am: Missing Environment Variables  Γòæ
+      ΓòÜΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓò
+ÉΓòÉΓòÉΓòÉΓòÉΓòÉΓò¥
+      
+      3 required variable(s) are not set:
+      
+        Γ£ù REACT_APP_SUPABASE_URL
+          ΓåÆ Supabase Project URL
+          ΓåÆ Found in: Supabase Dashboard ΓåÆ Settings ΓåÆ API ΓåÆ Project URL
+      
+        Γ£ù REACT_APP_SUPABASE_ANON_KEY
+          ΓåÆ Supabase Anon Key
+          ΓåÆ Found in: Supabase Dashboard ΓåÆ Settings ΓåÆ API ΓåÆ anon/public key
+      
+        Γ£ù REACT_APP_PAYSTACK_PUBLIC_KEY
+          ΓåÆ Paystack Public Key
+          ΓåÆ Found in: Paystack Dashboard ΓåÆ Settings ΓåÆ API Keys & Webhooks
+      
+      Create a .env file in the project root with these values.
+      See .env.example for a template.
+
+    [0m [90m 81 |[39m       [36mreturn[39m[33m;[39m
+     [90m 82 |[39m     }
+    [31m[1m>[22m[39m[90m 83 |[39m     originalError([33m...[39margs)[33m;[39m
+     [90m    |[39m     [31m[1m^[22m[39m
+     [90m 84 |[39m   }[33m;[39m
+     [90m 85 |[39m })[33m;[39m
+     [90m 86 |[39m afterAll(() [33m=>[39m {[0m
+
+      at console.error (src/setupTests.js:83:5)
+      at validateEnv (src/lib/env.js:53:11)
+      at src/__tests__/env.test.js:62:29
+      at Object.<anonymous> (node_modules/expect/build/toThrowMatchers.js:83:11)
+      at Object.toThrow (node_modules/expect/build/index.js:382:21)
+      at Object.<anonymous> (src/__tests__/env.test.js:62:33)
+
+    console.error
+      ΓòöΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓò
+ÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòù
+      Γòæ   Pick-Am: Missing Environment Variables  Γòæ
+      ΓòÜΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓò
+ÉΓòÉΓòÉΓòÉΓòÉΓòÉΓò¥
+      
+      1 required variable(s) are not set:
+      
+        Γ£ù REACT_APP_SUPABASE_URL
+          ΓåÆ Supabase Project URL
+          ΓåÆ Found in: Supabase Dashboard ΓåÆ Settings ΓåÆ API ΓåÆ Project URL
+      
+      Create a .env file in the project root with these values.
+      See .env.example for a template.
+
+    [0m [90m 81 |[39m       [36mreturn[39m[33m;[39m
+     [90m 82 |[39m     }
+    [31m[1m>[22m[39m[90m 83 |[39m     originalError([33m...[39margs)[33m;[39m
+     [90m    |[39m     [31m[1m^[22m[39m
+     [90m 84 |[39m   }[33m;[39m
+     [90m 85 |[39m })[33m;[39m
+     [90m 86 |[39m afterAll(() [33m=>[39m {[0m
+
+      at console.error (src/setupTests.js:83:5)
+      at validateEnv (src/lib/env.js:53:11)
+      at src/__tests__/env.test.js:70:29
+      at Object.<anonymous> (node_modules/expect/build/toThrowMatchers.js:83:11)
+      at Object.toThrow (node_modules/expect/build/index.js:382:21)
+      at Object.<anonymous> (src/__tests__/env.test.js:70:33)
+
+PASS src/__tests__/AuthContext.test.jsx (5.485 s)
+  ΓùÅ Console
+
+    console.error
+      The current testing environment is not configured to support act(...)
+
+    [0m [90m 81 |[39m       [36mreturn[39m[33m;[39m
+     [90m 82 |[39m     }
+    [31m[1m>[22m[39m[90m 83 |[39m     originalError([33m...[39margs)[33m;[39m
+     [90m    |[39m     [31m[1m^[22m[39m
+     [90m 84 |[39m   }[33m;[39m
+     [90m 85 |[39m })[33m;[39m
+     [90m 86 |[39m afterAll(() [33m=>[39m {[0m
+
+      at console.error (src/setupTests.js:83:5)
+      at isConcurrentActEnvironment (node_modules/react-dom/cjs/react-dom-client.development.js:16329:17)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom-client.development.js:18755:7)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:16409:11)
+      at dispatchSetStateInternal (node_modules/react-dom/cjs/react-dom-client.development.js:9170:13)
+      at setUser (node_modules/react-dom/cjs/react-dom-client.development.js:9127:7)
+      at login (src/contexts/AuthContext.js:62:5)
+
+    console.error
+      The current testing environment is not configured to support act(...)
+
+    [0m [90m 81 |[39m       [36mreturn[39m[33m;[39m
+     [90m 82 |[39m     }
+    [31m[1m>[22m[39m[90m 83 |[39m     originalError([33m...[39margs)[33m;[39m
+     [90m    |[39m     [31m[1m^[22m[39m
+     [90m 84 |[39m   }[33m;[39m
+     [90m 85 |[39m })[33m;[39m
+     [90m 86 |[39m afterAll(() [33m=>[39m {[0m
+
+      at console.error (src/setupTests.js:83:5)
+      at isConcurrentActEnvironment (node_modules/react-dom/cjs/react-dom-client.development.js:16329:17)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom-client.development.js:18755:7)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:16409:11)
+      at dispatchSetStateInternal (node_modules/react-dom/cjs/react-dom-client.development.js:9170:13)
+      at setUser (node_modules/react-dom/cjs/react-dom-client.development.js:9127:7)
+      at logout (src/contexts/AuthContext.js:85:5)
+
+PASS src/__tests__/ProtectedRoute.test.jsx (5.712 s)
+
+Test Suites: 3 passed, 3 total
+Tests:       16 passed, 16 total
+Snapshots:   0 total
+Time:        9.413 s
+Ran all test suites.

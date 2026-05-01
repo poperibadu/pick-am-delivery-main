@@ -1,0 +1,97 @@
+{
+  "theme_and_archetype": {
+    "domain": "Logistics & Delivery",
+    "theme": "Light",
+    "archetype": "Archetype 4 (Swiss & High-Contrast)",
+    "description": "Authority, clarity, truth. Highly functional tracking UI with strong monochrome foundations. Color is used strictly for state indication and action, breaking the typical generic SaaS look by adopting an editorial, brutalist approach."
+  },
+  "colors": {
+    "background": {
+      "default": "#FFFFFF",
+      "muted": "#F4F4F5"
+    },
+    "foreground": {
+      "default": "#0A0A0A",
+      "muted": "#52525B"
+    },
+    "primary": {
+      "default": "#0A0A0A",
+      "foreground": "#FFFFFF"
+    },
+    "accent": {
+      "green": "#00A859",
+      "orange": "#FF5B22",
+      "blue": "#002FA7"
+    },
+    "border": "#E4E4E7",
+    "rules": [
+      "95% of the UI must be monochrome (White/Black/Grey).",
+      "Use Signal Green (#00A859) exclusively for positive delivery states or successful actions.",
+      "Use Safety Orange (#FF5B22) for 'waiting' or 'in-transit' active states.",
+      "Never use pure #000000; #0A0A0A is the default text color.",
+      "Tint greys slightly blue/cool to maintain the clinical authority of the logistics platform."
+    ]
+  },
+  "typography": {
+    "heading_font": "Cabinet Grotesk",
+    "body_font": "IBM Plex Sans",
+    "rules": [
+      "H1 (Hero/Main): text-4xl sm:text-5xl font-black tracking-tighter",
+      "H2 (Section): text-2xl sm:text-3xl font-bold tracking-tight",
+      "Body: text-base leading-relaxed font-normal",
+      "Overlines/Labels: text-xs uppercase tracking-[0.2em] font-medium",
+      "Numeric values (Wallet balances, Landmarks, Phones): Must use IBM Plex Sans for tabular, highly legible figures."
+    ],
+    "installation": "Import via Google Fonts (IBM Plex Sans) and Fontshare (Cabinet Grotesk)"
+  },
+  "spacing_and_layout": {
+    "scale": "Generous Tailwind spacing scale",
+    "rules": [
+      "Use liberal padding for primary content screens: p-6 or p-8 inside cards.",
+      "Dashboard Layout: The 'Control Room' Grid - grid-cols-1 md:grid-cols-3 with tight gap-4.",
+      "Never center default text; left-align strictly for quick scanning and optical alignment.",
+      "Forms: 100% width inputs with crisp 1px borders, no soft shadows, hard rectangular corners."
+    ]
+  },
+  "surface_strategies": {
+    "containers": "Grid Borders (The Technical Look). Expose the skeleton. Containers use border-collapse style layout with 1px solid borders.",
+    "cards": "Flat background, 1px subtle border, NO soft shadows. On hover: slight lift (-translate-y-1) and solid black border.",
+    "bottom_sheets": "For tracking map overlays: Solid white background with a hard top border (border-t-2 border-black) instead of generic glassmorphism. It must feel like a reliable utility, not a social app.",
+    "buttons": "Square or very slightly rounded (rounded-sm). Massive, chunky touch targets."
+  },
+  "components_strategy": {
+    "auth": "Split screen on desktop. Left: Solid white form with stark typography. Right: Map background image heavily tinted (bg-black/50) to retain texture without distracting.",
+    "chat_create_package": "Chat-style UI instead of a standard boring form. Sender messages are right-aligned (Black background, white text). System/bot prompts are left-aligned (Muted grey background, black text). Input anchored at the bottom.",
+    "package_tracking": "State-driven: Full-bleed Leaflet map. Tracking status overlay in a stark white bottom sheet. Status indicators (Waiting, Assigned, Transit, Delivered) must use solid geometric indicators.",
+    "wallet": "High-contrast digital display style. Massive typography for balance (text-5xl font-black). Buttons are full-width, solid block style.",
+    "receiver_view": "Clear 'Accept' (Signal Green) and 'Reject' (Black) stark buttons. High-density information presentation for package details (landmark, item type)."
+  },
+  "motion_and_interactions": {
+    "rules": [
+      "Minimalist animations. Snappy state changes rather than floaty transitions.",
+      "Use compound gestures for tracking lists.",
+      "Hover states must explicitly change text color or border color (e.g., hover:bg-black hover:text-white)."
+    ]
+  },
+  "icons": {
+    "library": "Phosphor Icons (@phosphor-icons/react)",
+    "style": "Regular or Bold weight, strictly un-styled except for active states."
+  },
+  "media": {
+    "images": {
+      "auth_background": "https://images.unsplash.com/photo-1670506761128-2076c4c881da?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzF8MHwxfHNlYXJjaHwyfHxhZXJpYWwlMjB2aWV3JTIwY2l0eSUyMG1hcHxlbnwwfHx8fDE3NzYwMDA4NTl8MA&ixlib=rb-4.1.0&q=85",
+      "sender_avatar": "https://images.unsplash.com/photo-1697383904932-94304530a3dd?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Nzd8MHwxfHNlYXJjaHwzfHxhZnJpY2FuJTIwcGVyc29uJTIwcG9ydHJhaXQlMjBwaG9uZXxlbnwwfHx8fDE3NzYwMDA4NTl8MA&ixlib=rb-4.1.0&q=85",
+      "receiver_avatar": "https://images.unsplash.com/photo-1610902363237-9c12fe70c74b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Nzd8MHwxfHNlYXJjaHwyfHxhZnJpY2FuJTIwcGVyc29uJTIwcG9ydHJhaXQlMjBwaG9uZXxlbnwwfHx8fDE3NzYwMDA4NTl8MA&ixlib=rb-4.1.0&q=85",
+      "rider_avatar": "https://images.unsplash.com/photo-1718040538250-360256988f36?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Nzd8MHwxfHNlYXJjaHwxfHxhZnJpY2FuJTIwcGVyc29uJTIwcG9ydHJhaXQlMjBwaG9uZXxlbnwwfHx8fDE3NzYwMDA4NTl8MA&ixlib=rb-4.1.0&q=85",
+      "rider_action": "https://images.unsplash.com/photo-1711702321525-01dbf0836ad4?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NDh8MHwxfHNlYXJjaHwxfHxkZWxpdmVyeSUyMHJpZGVyJTIwbW90b3JjeWNsZXxlbnwwfHx8fDE3NzYwMDA4NTl8MA&ixlib=rb-4.1.0&q=85"
+    },
+    "rules": [
+      "Never use placeholder image links.",
+      "Images must be properly cropped and fit the container.",
+      "Map backgrounds must have an overlay (bg-black/50 or higher) if text is present."
+    ]
+  },
+  "testing": {
+    "attributes": "All interactive elements MUST include data-testid attributes (e.g., data-testid='accept-package-button')."
+  }
+}
