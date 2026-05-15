@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Navigate, Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { ArrowRight, User, Motorcycle } from '@phosphor-icons/react';
 
 export default function RegisterPage() {
   const { user, register } = useAuth();
+  const navigate = useNavigate();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -15,7 +16,15 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  if (user) return <Navigate to={user.role === 'rider' ? '/rider' : '/dashboard'} replace />;
+  useEffect(() => {
+    if (user) {
+      const timer = setTimeout(() => {
+        const dest = user.role === 'rider' ? '/rider' : '/dashboard';
+        navigate(dest, { replace: true });
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,9 +34,10 @@ export default function RegisterPage() {
       await register(email, password, name, phone, role);
     } catch (err) {
       setError(err.message);
-    } finally {
-      setLoading(false);
+      setLoading(false); // Important: stop loading on error
     }
+    // We don't setLoading(false) here on success, because the component will unmount on redirect anyway
+    // but the useEffect handles the navigation.
   };
 
   return (

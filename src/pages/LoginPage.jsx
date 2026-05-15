@@ -1,18 +1,27 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Navigate, Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { ArrowRight } from '@phosphor-icons/react';
 
 export default function LoginPage() {
   const { user, login } = useAuth();
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  if (user) return <Navigate to={user.role === 'rider' ? '/rider' : '/dashboard'} replace />;
+  useEffect(() => {
+    if (user) {
+      const timer = setTimeout(() => {
+        const dest = user.role === 'rider' ? '/rider' : '/dashboard';
+        navigate(dest, { replace: true });
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,7 +31,6 @@ export default function LoginPage() {
       await login(email, password);
     } catch (err) {
       setError(err.message);
-    } finally {
       setLoading(false);
     }
   };

@@ -46,7 +46,45 @@ export default function WalletPage() {
     fetchWallet();
   }, [fetchWallet]);
 
-  const handlePaystackTopup = async () => {
+  const config = {
+    reference: (new Date()).getTime().toString(),
+    email: user?.email || 'user@example.com',
+    amount: parseFloat(topupAmount || 0) * 100, // in kobo
+    publicKey: process.env.REACT_APP_PAYSTACK_PUBLIC_KEY,
+  };
+
+  const initializePayment = usePaystackPayment(config);
+
+  const onSuccess = async (reference) => {
+    try {
+      setLoading(true);
+      // Use internal RPC directly for rapid local testing without edge functions
+      const { data, error } = await supabase.rpc('topup_user_wallet_internal', {
+        p_user_id: user.id,
+        p_amount: parseFloat(topupAmount),
+        p_reference: reference.reference
+      });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      await fetchWallet();
+      setShowTopup(false);
+      setTopupAmount('');
+    } catch (err) {
+      console.error('Verification failed:', err);
+      alert('Payment added but verification failed: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onClose = () => {
+    setLoading(false);
+  };
+
+  const handlePaystackTopup = () => {
     const amt = parseFloat(topupAmount);
     if (!amt || amt < 500) {
       alert('Minimum top-up is ₦500');
@@ -54,27 +92,7 @@ export default function WalletPage() {
     }
 
     setLoading(true);
-    try {
-      // 1. Request secure initialization from your Edge Function
-      const { data, error } = await supabase.functions.invoke('initialize-payment', {
-        body: { amount: amt },
-      });
-
-      if (error) throw error;
-
-      // 2. Redirect to the secure Paystack Authorization URL
-      // This is the safest method as it's fully managed and server-verified
-      if (data?.authorization_url) {
-        window.location.href = data.authorization_url;
-      } else {
-        throw new Error('Could not initialize payment');
-      }
-    } catch (err) {
-      console.error('Initialization failed:', err);
-      alert('Payment initialization failed: ' + err.message);
-    } finally {
-      setLoading(false);
-    }
+    initializePayment(onSuccess, onClose);
   };
 
   const quickAmounts = [1000, 2000, 5000, 10000];

@@ -7,60 +7,69 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null); // null = checking, false = not auth
   const [loading, setLoading] = useState(true);
 
-  const fetchProfile = useCallback(async (userId) => {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single();
+  const fetchProfile = useCallback(async (userId, retries = 3) => {
+    for (let i = 0; i < retries; i++) {
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', userId)
+          .single();
 
-      if (error) throw error;
-      return data;
-    } catch (err) {
-      console.error('Error fetching profile:', err);
-      return null;
+        if (error) {
+          if (error.code === 'PGRST116' && i < retries - 1) {
+            // Profile not found yet, likely trigger is still running. Wait and retry.
+            await new Promise(resolve => setTimeout(resolve, 500));
+            continue;
+          }
+          throw error;
+        }
+        return data;
+      } catch (err) {
+        if (i === retries - 1) {
+          console.error('Error fetching profile after retries:', err);
+          return null;
+        }
+      }
     }
   }, []);
 
-  const checkAuth = useCallback(async () => {
-    try {
-      const { data: { user: sbUser } } = await supabase.auth.getUser();
-      if (sbUser) {
-        const profile = await fetchProfile(sbUser.id);
-        setUser({ ...sbUser, ...profile });
-      } else {
-        setUser(false);
-      }
-    } catch {
-      setUser(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [fetchProfile]);
-
   useEffect(() => {
-    checkAuth();
+    let isMounted = true;
     
+    // Supabase v2 natively fires INITIAL_SESSION synchronously here.
+    // Relying solely on this prevents React Strict Mode race conditions
+    // and eliminates the 5-second 'orphaned lock' hang on app load.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' && session?.user) {
+      // Only proceed if component is still mounted
+      if (!isMounted) return;
+
+      if ((event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'USER_UPDATED') && session?.user) {
+        // Fetch custom profile data matching the session
         const profile = await fetchProfile(session.user.id);
-        setUser({ ...session.user, ...profile });
-      } else if (event === 'SIGNED_OUT') {
-        setUser(false);
+        if (isMounted) {
+          setUser({ ...session.user, ...profile });
+          setLoading(false);
+        }
+      } else if (event === 'INITIAL_SESSION' || event === 'SIGNED_OUT') {
+        if (isMounted) {
+          setUser(false);
+          setLoading(false);
+        }
       }
     });
 
-    return () => subscription.unsubscribe();
-  }, [checkAuth, fetchProfile]);
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
+  }, [fetchProfile]);
 
   const login = async (email, password) => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
-    const profile = await fetchProfile(data.user.id);
-    const fullUser = { ...data.user, ...profile };
-    setUser(fullUser);
-    return fullUser;
+    // We rely on onAuthStateChange to set the user state to avoid race conditions
+    return data.user;
   };
 
   const register = async (email, password, name, phone, role = 'user') => {
@@ -71,18 +80,25 @@ export function AuthProvider({ children }) {
         data: { name, phone, role }
       }
     });
+
     if (error) throw error;
+    if (!data.user) throw new Error('Signup failed - no user data returned');
     
-    // Auth trigger usually creates the profile, but we might need to wait or fetch it
-    const profile = await fetchProfile(data.user.id);
-    const fullUser = { ...data.user, ...profile };
-    setUser(fullUser);
-    return fullUser;
+    // Again, we rely on onAuthStateChange if a session was created.
+    // If no session (email confirmation required), onAuthStateChange won't fire SIGNED_IN.
+    if (!data.session) {
+      // Manual notification or state for "Check your email" could go here
+    }
+    
+    return data.user;
   };
 
   const logout = async () => {
-    await supabase.auth.signOut();
-    setUser(false);
+    try {
+      await supabase.auth.signOut();
+    } finally {
+      setUser(false);
+    }
   };
 
   const refreshUser = async () => {

@@ -11,13 +11,14 @@ const isLocalhost = Boolean(
 
 export function register(config) {
   if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
-    const publicUrl = new URL(process.env.PUBLIC_URL, window.location.href);
+    const publicUrlStr = process.env.PUBLIC_URL || '';
+    const publicUrl = new URL(publicUrlStr, window.location.href);
     if (publicUrl.origin !== window.location.origin) {
       return;
     }
 
     window.addEventListener('load', () => {
-      const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
+      const swUrl = `${publicUrlStr}/service-worker.js`.replace('//', '/');
 
       if (isLocalhost) {
         checkValidServiceWorker(swUrl, config);
@@ -63,7 +64,7 @@ function checkValidServiceWorker(swUrl, config) {
       if (response.status === 404 || (contentType != null && contentType.indexOf('javascript') === -1)) {
         navigator.serviceWorker.ready.then((registration) => {
           registration.unregister().then(() => {
-            window.location.reload();
+            console.warn('Service worker not found or invalid. Unregistered.');
           });
         });
       } else {
