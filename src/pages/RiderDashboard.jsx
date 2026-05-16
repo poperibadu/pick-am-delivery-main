@@ -151,10 +151,11 @@ export default function RiderDashboard() {
         {/* Greeting + Online Toggle */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <p className="text-xs uppercase tracking-[0.2em] font-medium text-[#52525B]">Rider Mode</p>
+            <p className="text-xs uppercase tracking-[0.2em] font-medium text-[#52525B]">Rider dispatch</p>
             <h1 data-testid="rider-dashboard-heading" className="text-2xl sm:text-3xl font-black tracking-tighter text-[#0A0A0A]">
-              {user?.name?.split(' ')[0] || 'Rider'}
+              Pick-Am Rider Dashboard
             </h1>
+            <p className="text-lg font-bold text-[#52525B] mt-1">Ready, {user?.name?.split(' ')[0] || 'Rider'}</p>
           </div>
           <button
             data-testid="toggle-availability-btn"

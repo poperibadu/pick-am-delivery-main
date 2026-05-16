@@ -190,7 +190,7 @@ export default function CreatePackagePage() {
           <button type="button" onClick={() => navigate('/dashboard')} className="p-2 -ml-2 text-[#52525B] hover:text-[#0A0A0A]">
             <ArrowLeft size={20} weight="bold" />
           </button>
-          <span className="text-lg font-black tracking-tighter">Deliver Package</span>
+          <h1 className="text-lg font-black tracking-tighter">Deliver Package</h1>
         </div>
       </header>
 
