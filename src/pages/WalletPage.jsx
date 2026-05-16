@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import supabase from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
@@ -46,12 +46,12 @@ export default function WalletPage() {
     fetchWallet();
   }, [fetchWallet]);
 
-  const config = {
+  const config = useMemo(() => ({
     reference: (new Date()).getTime().toString(),
     email: user?.email || 'user@example.com',
-    amount: parseFloat(topupAmount || 0) * 100, // in kobo
+    amount: (parseFloat(topupAmount) || 0) * 100, // in kobo
     publicKey: process.env.REACT_APP_PAYSTACK_PUBLIC_KEY,
-  };
+  }), [user?.email, topupAmount]);
 
   const initializePayment = usePaystackPayment(config);
 
@@ -82,6 +82,7 @@ export default function WalletPage() {
 
   const onClose = () => {
     setLoading(false);
+    console.log('Payment modal closed');
   };
 
   const handlePaystackTopup = () => {
@@ -91,8 +92,14 @@ export default function WalletPage() {
       return;
     }
 
-    setLoading(true);
-    initializePayment(onSuccess, onClose);
+    try {
+      setLoading(true);
+      initializePayment(onSuccess, onClose);
+    } catch (err) {
+      console.error('Paystack initialization failed:', err);
+      setLoading(false);
+      alert('Could not open payment gateway. Please check your internet connection.');
+    }
   };
 
   const quickAmounts = [1000, 2000, 5000, 10000];
