@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import supabase from '../lib/supabase';
 import { useRiderWebSocket } from '../hooks/useWebSocket';
 import { Button } from '../components/ui/button';
+import Footer from '../components/Footer';
 import {
   Motorcycle, SignOut, MapPin, Package as PackageIcon,
   ArrowRight, Lightning, Star, Wallet,
@@ -315,6 +316,7 @@ export default function RiderDashboard() {
           </Link>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

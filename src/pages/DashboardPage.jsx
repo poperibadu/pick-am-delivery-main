@@ -5,6 +5,7 @@ import supabase from '../lib/supabase';
 import { useUserWebSocket } from '../hooks/useWebSocket';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
+import Footer from '../components/Footer';
 import {
   Package, PaperPlaneTilt, Wallet, SignOut, Plus,
   ArrowRight, Clock, CheckCircle, MapPin, Tray, WifiHigh, ClockCounterClockwise,
@@ -301,6 +302,7 @@ export default function DashboardPage() {
           )}
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

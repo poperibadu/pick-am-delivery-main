@@ -4,6 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { ArrowRight } from '@phosphor-icons/react';
+import Footer from '../components/Footer';
 
 export default function LoginPage() {
   const { user, login } = useAuth();
@@ -109,6 +110,9 @@ export default function LoginPage() {
             <p className="text-white/70 text-base max-w-xs leading-relaxed">
               Confirm readiness. Deliver successfully. Nigeria's receiver-first delivery platform.
             </p>
+          </div>
+          <div className="mt-auto">
+            <Footer />
           </div>
         </div>
       </div>
