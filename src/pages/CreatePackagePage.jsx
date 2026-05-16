@@ -149,14 +149,28 @@ export default function CreatePackagePage() {
 
       if (insertError) throw insertError;
 
-      const { data: payData, error: payError } = await supabase.rpc('pay_for_package', {
-        p_package_id: data.id
-      });
+      try {
+        const { data: payData, error: payError } = await supabase.rpc('pay_for_package', {
+          p_package_id: data.id
+        });
 
-      if (payError) throw payError;
-      if (!payData.success) throw new Error(payData.error);
+        if (payError) throw payError;
+        if (!payData.success) {
+          // If it's just insufficient funds, we still want to go to the track page 
+          // where they can see the "Top Up" prompt.
+          if (payData.error === 'Insufficient funds') {
+            navigate(`/track/${data.id}`);
+            return;
+          }
+          throw new Error(payData.error);
+        }
 
-      navigate(`/track/${data.id}`);
+        navigate(`/track/${data.id}`);
+      } catch (payErr) {
+        // Payment failed but package was created. Go to tracking page so they can try again after topup.
+        console.error('Payment failed after insertion:', payErr);
+        navigate(`/track/${data.id}`);
+      }
     } catch (err) {
       setError(err.message || 'Failed to create package');
       setLoading(false);

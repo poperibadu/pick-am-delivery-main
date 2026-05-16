@@ -42,6 +42,7 @@ export default function RiderDashboard() {
         .from('packages')
         .select('*, sender:profiles!sender_id(name)')
         .eq('status', 'searching_rider')
+        .neq('sender_id', user.id)
         .order('created_at', { ascending: false });
       
       if (jError) throw jError;

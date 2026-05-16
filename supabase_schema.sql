@@ -494,6 +494,7 @@ DECLARE
     pkg RECORD;
     sender RECORD;
     new_status package_status;
+    otp TEXT;
 BEGIN
     -- Fetch package
     SELECT * INTO pkg FROM public.packages WHERE id = p_package_id;
@@ -513,6 +514,9 @@ BEGIN
             RETURN jsonb_build_object('success', false, 'error', 'Sender has insufficient funds');
         END IF;
         
+        -- Generate OTP (4 digits)
+        otp := (floor(random() * 9000) + 1000)::text;
+
         -- Deduct from sender
         UPDATE public.profiles SET wallet_balance = wallet_balance - pkg.price WHERE id = pkg.sender_id;
         
@@ -520,17 +524,24 @@ BEGIN
         INSERT INTO public.wallet_transactions (user_id, amount, type, description, package_id)
         VALUES (pkg.sender_id, -pkg.price, 'delivery_payment', 'Payment for package delivery', p_package_id);
         
-        new_status := 'searching_rider';
+        -- Update package with OTP and status
+        UPDATE public.packages SET 
+            status = 'searching_rider', 
+            delivery_otp = otp,
+            updated_at = NOW() 
+        WHERE id = p_package_id;
+
+        -- MOCK SMS (since it's now paid and searching)
+        INSERT INTO public.sms_logs (phone, message)
+        VALUES (pkg.receiver_phone, 'Pick-Am: A package is coming for you! Tracking ID: ' || (p_package_id::text) || '. Give this PIN to the rider on delivery: ' || otp);
+
+        RETURN jsonb_build_object('success', true, 'status', 'searching_rider', 'otp', otp);
     ELSIF p_action = 'reject' THEN
-        new_status := 'rejected';
+        UPDATE public.packages SET status = 'rejected', updated_at = NOW() WHERE id = p_package_id;
+        RETURN jsonb_build_object('success', true, 'status', 'rejected');
     ELSE
         RETURN jsonb_build_object('success', false, 'error', 'Invalid action');
     END IF;
-    
-    -- Update package
-    UPDATE public.packages SET status = new_status, updated_at = NOW() WHERE id = p_package_id;
-    
-    RETURN jsonb_build_object('success', true, 'status', new_status);
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
