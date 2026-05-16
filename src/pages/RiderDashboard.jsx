@@ -7,7 +7,7 @@ import { Button } from '../components/ui/button';
 import {
   Motorcycle, SignOut, MapPin, Package as PackageIcon,
   ArrowRight, Lightning, Star, Wallet,
-  Circle, WifiHigh
+  Circle, WifiHigh, UserCircle
 } from '@phosphor-icons/react';
 
 export default function RiderDashboard() {
@@ -133,6 +133,9 @@ export default function RiderDashboard() {
             <Link to="/rider/wallet" data-testid="rider-nav-wallet" className="flex items-center gap-2 px-3 py-1.5 border border-white/20 hover:border-white/50 transition-colors text-sm">
               <Wallet size={16} weight="bold" />
               <span className="font-semibold">{Number(stats ? (stats.wallet_balance + stats.pending_balance) : 0).toLocaleString()}</span>
+            </Link>
+            <Link to="/profile" data-testid="rider-nav-profile" className="p-2 text-white/60 hover:text-white transition-colors">
+              <UserCircle size={24} weight="bold" />
             </Link>
             <Button
               data-testid="rider-logout-button"

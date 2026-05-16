@@ -293,6 +293,17 @@ export default function TrackingPage() {
               <p className="text-xl font-bold text-[#0A0A0A]">Delivery Complete</p>
               <p className="text-sm text-[#52525B] mt-1">Package delivered successfully</p>
               
+              {pkg.delivery_image_url && (
+                <div className="mt-4 border border-[#E4E4E7] p-1 bg-white inline-block">
+                  <p className="text-[10px] uppercase font-bold text-[#52525B] mb-1">Proof of Delivery</p>
+                  <img 
+                    src={pkg.delivery_image_url} 
+                    alt="Proof of Delivery" 
+                    className="max-w-full h-auto max-h-[300px] object-contain"
+                  />
+                </div>
+              )}
+              
               {!pkg.is_disputed ? (
                 <div className="mt-4 flex flex-col gap-2 max-w-[200px] mx-auto">
                   <Button

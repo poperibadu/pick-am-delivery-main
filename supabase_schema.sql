@@ -101,7 +101,9 @@ CREATE TABLE IF NOT EXISTS public.packages (
     pickup_image_url TEXT,
     delivery_image_url TEXT,
     is_disputed BOOLEAN DEFAULT FALSE,
-    dispute_reason TEXT
+    dispute_reason TEXT,
+    issue_reported BOOLEAN DEFAULT FALSE,
+    issue_description TEXT
 );
 
 
@@ -611,6 +613,22 @@ BEGIN
         status = 'rider_assigned', 
         updated_at = NOW() 
     WHERE id = p_package_id;
+    
+    RETURN jsonb_build_object('success', true);
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- NEW: Report Delivery Issue (For Riders)
+CREATE OR REPLACE FUNCTION report_delivery_issue(p_package_id UUID, p_issue TEXT)
+RETURNS JSONB AS $$
+BEGIN
+    UPDATE public.packages 
+    SET 
+        issue_reported = TRUE,
+        issue_description = p_issue,
+        updated_at = NOW()
+    WHERE id = p_package_id 
+    AND rider_id = auth.uid();
     
     RETURN jsonb_build_object('success', true);
 END;

@@ -7,7 +7,8 @@ import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import {
   Package, PaperPlaneTilt, Wallet, SignOut, Plus,
-  ArrowRight, Clock, CheckCircle, MapPin, Tray, WifiHigh, ClockCounterClockwise
+  ArrowRight, Clock, CheckCircle, MapPin, Tray, WifiHigh, ClockCounterClockwise,
+  UserCircle
 } from '@phosphor-icons/react';
 
 const STATUS_LABELS = {
@@ -129,6 +130,9 @@ export default function DashboardPage() {
             <Link to="/wallet" data-testid="nav-wallet" className="flex items-center gap-2 px-3 py-2 border border-[#E4E4E7] hover:border-[#0A0A0A] transition-colors">
               <Wallet size={18} weight="bold" />
               <span className="text-sm font-semibold">{Number(walletBalance).toLocaleString()}</span>
+            </Link>
+            <Link to="/profile" data-testid="nav-profile" className="p-2 text-[#52525B] hover:text-[#0A0A0A] transition-colors">
+              <UserCircle size={24} weight="bold" />
             </Link>
             <Button
               data-testid="logout-button"

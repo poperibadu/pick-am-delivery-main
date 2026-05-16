@@ -7,11 +7,12 @@ import { useAuth } from '../contexts/AuthContext';
 import supabase from '../lib/supabase';
 import { useGeolocation } from '../hooks/useGeolocation';
 import { usePackageWebSocket } from '../hooks/useWebSocket';
+import imageCompression from 'browser-image-compression';
 import { Button } from '../components/ui/button';
 import {
   ArrowLeft, Phone, MapPin, CheckCircle, Motorcycle,
   Package as PackageIcon, ArrowsClockwise, WifiHigh, WifiSlash,
-  Crosshair, NavigationArrow
+  Crosshair, NavigationArrow, Camera
 } from '@phosphor-icons/react';
 
 delete L.Icon.Default.prototype._getIconUrl;
@@ -49,6 +50,8 @@ export default function RiderActiveDelivery() {
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
   const [otp, setOtp] = useState('');
+  const [deliveryImage, setDeliveryImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
   // Real geolocation
   const isActive = pkg && ['rider_assigned', 'picked_up', 'in_transit'].includes(pkg.status);
@@ -100,6 +103,58 @@ export default function RiderActiveDelivery() {
     }).catch(err => console.error('Location update failed:', err));
   }, [geoPos, isActive, packageId, pkg?.status]);
 
+  const handleReportIssue = async () => {
+    const issue = window.prompt("What's the issue? (e.g. flat tire, heavy traffic, accident)");
+    if (!issue) return;
+    
+    setActionLoading(true);
+    try {
+      const { data, error } = await supabase.rpc('report_delivery_issue', {
+        p_package_id: packageId,
+        p_issue: issue
+      });
+      if (error) throw error;
+      if (!data.success) throw new Error(data.error);
+      alert("Issue reported. The sender will see this on their tracking page.");
+      fetchPackage();
+    } catch (err) {
+      alert(err.message || 'Failed to report issue');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      const options = {
+        maxSizeMB: 0.5,
+        maxWidthOrHeight: 1280,
+        useWebWorker: true
+      };
+      const compressedFile = await imageCompression(file, options);
+      setDeliveryImage(compressedFile);
+      setImagePreview(URL.createObjectURL(compressedFile));
+    } catch (err) {
+      console.error('Compression failed:', err);
+      alert('Failed to process image');
+    }
+  };
+
+  const uploadProofImage = async (packageId) => {
+    if (!deliveryImage) return null;
+    const fileName = `delivery_${packageId}_${Date.now()}.jpg`;
+    const { data, error } = await supabase.storage
+      .from('package-images')
+      .upload(fileName, deliveryImage);
+    
+    if (error) throw error;
+    const { data: { publicUrl } } = supabase.storage.from('package-images').getPublicUrl(fileName);
+    return publicUrl;
+  };
+
   const handleAction = async () => {
     const statusMap = {
       'rider_assigned': 'arrived_at_pickup',
@@ -112,6 +167,12 @@ export default function RiderActiveDelivery() {
 
     setActionLoading(true);
     try {
+      let imageUrl = null;
+      if (nextStatus === 'delivered') {
+        if (!deliveryImage) throw new Error('Proof of delivery photo is required');
+        imageUrl = await uploadProofImage(packageId);
+      }
+
       const { data, error } = await supabase.rpc('update_delivery_status', {
         p_package_id: packageId,
         p_status: nextStatus,
@@ -122,6 +183,14 @@ export default function RiderActiveDelivery() {
       
       if (error) throw error;
       if (!data.success) throw new Error(data.error);
+
+      // Save image URL separately as RLS might be tricky for direct URL updates
+      if (imageUrl) {
+        await supabase
+          .from('packages')
+          .update({ delivery_image_url: imageUrl })
+          .eq('id', packageId);
+      }
 
       fetchPackage();
     } catch (err) {
@@ -257,31 +326,73 @@ export default function RiderActiveDelivery() {
           </div>
 
           {pkg.status === 'in_transit' && (
-            <div className="mb-4 bg-[#F4F4F5] p-4 border border-[#E4E4E7]">
-              <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#52525B] mb-2">Delivery Verification</p>
-              <input
-                data-testid="delivery-otp-input"
-                type="text"
-                maxLength={4}
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                placeholder="Enter 4-digit PIN from receiver"
-                className="w-full h-12 bg-white border border-[#E4E4E7] text-center text-xl font-bold tracking-[0.5em] focus:outline-none focus:border-[#0A0A0A]"
-              />
-              <p className="text-[10px] text-[#52525B] mt-2 italic text-center">Ask the receiver for the PIN displayed on their tracking screen.</p>
+            <div className="mb-4 bg-[#F4F4F5] p-4 border border-[#E4E4E7] space-y-4">
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#52525B] mb-2">1. Proof of Delivery PhotO</p>
+                <div className="relative">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    onChange={handleImageChange}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                  />
+                  <div className="h-24 border-2 border-dashed border-[#E4E4E7] flex flex-col items-center justify-center bg-white">
+                    {imagePreview ? (
+                      <img src={imagePreview} alt="Preview" className="h-full w-full object-cover" />
+                    ) : (
+                      <>
+                        <Camera size={24} className="text-[#A1A1AA] mb-1" />
+                        <p className="text-[10px] font-bold text-[#52525B]">Take/Upload Photo</p>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#52525B] mb-2">2. Delivery Verification PIN</p>
+                <input
+                  data-testid="delivery-otp-input"
+                  type="text"
+                  maxLength={4}
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  placeholder="Enter 4-digit PIN"
+                  className="w-full h-12 bg-white border border-[#E4E4E7] text-center text-xl font-bold tracking-[0.5em] focus:outline-none focus:border-[#0A0A0A]"
+                />
+                <p className="text-[10px] text-[#52525B] mt-2 italic text-center">PIN is displayed on the receiver's tracking screen.</p>
+              </div>
             </div>
           )}
 
           {step?.action && (
-            <Button
-              data-testid="rider-action-btn"
-              onClick={handleAction}
-              disabled={actionLoading || (pkg.status === 'in_transit' && otp.length !== 4)}
-              className="w-full h-14 rounded-sm text-base font-bold text-white shadow-[0_4px_0_0_rgba(0,0,0,0.1)] active:translate-y-[2px] active:shadow-none transition-all"
-              style={{ backgroundColor: step.color }}
-            >
-              {actionLoading ? 'Processing...' : step.action}
-            </Button>
+            <div className="space-y-4">
+              <Button
+                data-testid="rider-action-btn"
+                onClick={handleAction}
+                disabled={actionLoading || (pkg.status === 'in_transit' && (otp.length !== 4 || !deliveryImage))}
+                className="w-full h-14 rounded-sm text-base font-bold text-white shadow-[0_4px_0_0_rgba(0,0,0,0.1)] active:translate-y-[2px] active:shadow-none transition-all"
+                style={{ backgroundColor: step.color }}
+              >
+                {actionLoading ? 'Processing...' : step.action}
+              </Button>
+              
+              {!pkg.issue_reported && pkg.status !== 'delivered' && (
+                <button 
+                  onClick={handleReportIssue}
+                  className="w-full py-2 text-xs font-bold uppercase tracking-widest text-red-600 hover:underline"
+                >
+                  Report Delay or Issue
+                </button>
+              )}
+              {pkg.issue_reported && (
+                <div className="p-3 bg-red-50 border border-red-100 text-red-700 text-xs text-center border-dashed">
+                  <p className="font-bold mb-1 uppercase tracking-tighter">Issue Reported</p>
+                  <p>"{pkg.issue_description}"</p>
+                </div>
+              )}
+            </div>
           )}
 
           {pkg.status === 'delivered' && (
