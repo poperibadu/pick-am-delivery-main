@@ -146,10 +146,11 @@ export default function DashboardPage() {
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
         {/* Welcome + Stats */}
         <div className="mb-8">
-          <p className="text-xs uppercase tracking-[0.2em] font-medium text-[#52525B] mb-1">Dashboard</p>
+          <p className="text-xs uppercase tracking-[0.2em] font-medium text-[#52525B] mb-1">Logistics Dashboard</p>
           <h1 data-testid="dashboard-heading" className="text-3xl sm:text-4xl font-black tracking-tighter text-[#0A0A0A]">
-            Hello, {user?.name?.split(' ')[0] || 'User'}
+            Pick-Am Delivery Management
           </h1>
+          <p className="text-lg font-bold text-[#52525B] mt-1">Hello, {user?.name?.split(' ')[0] || 'User'}</p>
         </div>
 
         {/* Quick Stats Grid - Technical Skeleton Style */}
