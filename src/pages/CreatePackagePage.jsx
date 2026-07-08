@@ -49,7 +49,10 @@ export default function CreatePackagePage() {
   useEffect(() => {
     const calcPrice = async () => {
       const { pickup_landmark, dropoff_landmark, package_size, item_value } = formData;
-      if (!pickup_landmark || !dropoff_landmark || !package_size) return;
+      if (!pickup_landmark || !dropoff_landmark || !package_size) {
+        setPriceInfo(null);
+        return;
+      }
       try {
         const { data, error: rpcError } = await supabase.rpc('get_delivery_quote', {
           p_pickup_landmark: pickup_landmark,
@@ -61,6 +64,7 @@ export default function CreatePackagePage() {
         setPriceInfo(data);
       } catch (err) {
         console.error('Price calculation failed:', err);
+        setPriceInfo(null);
       }
     };
     const timer = setTimeout(calcPrice, 500);
@@ -126,18 +130,24 @@ export default function CreatePackagePage() {
       return;
     }
 
+    if (!priceInfo?.total_price && !priceInfo?.price) {
+      setError('Unable to calculate delivery quote. Check your locations and try again.');
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError('');
     try {
       const pkgToInsert = {
         ...formData,
         sender_id: user.id,
-        price: priceInfo?.total_price || priceInfo?.price || 0,
-        insurance_fee: priceInfo?.insurance_fee || 0,
+        price: priceInfo.total_price || priceInfo.price,
+        insurance_fee: priceInfo.insurance_fee || 0,
         item_value: Number(formData.item_value) || 0,
-        distance_km: priceInfo?.distance_km || 0,
-        tracking_lat: priceInfo?.pickup_coords?.[0],
-        tracking_lng: priceInfo?.pickup_coords?.[1],
+        distance_km: priceInfo.distance_km || 0,
+        tracking_lat: priceInfo.pickup_coords?.[0],
+        tracking_lng: priceInfo.pickup_coords?.[1],
         status: 'pending_receiver'
       };
 
@@ -156,18 +166,15 @@ export default function CreatePackagePage() {
 
         if (payError) throw payError;
         if (!payData.success) {
-          // If it's just insufficient funds, we still want to go to the track page 
-          // where they can see the "Top Up" prompt.
           if (payData.error === 'Insufficient funds') {
             navigate(`/track/${data.id}`);
             return;
           }
-          throw new Error(payData.error);
+          throw new Error(payData.error || 'Payment failed');
         }
 
         navigate(`/track/${data.id}`);
       } catch (payErr) {
-        // Payment failed but package was created. Go to tracking page so they can try again after topup.
         console.error('Payment failed after insertion:', payErr);
         navigate(`/track/${data.id}`);
       }
@@ -437,10 +444,10 @@ export default function CreatePackagePage() {
           
           <Button 
             onClick={handleSubmit} 
-            disabled={loading || (priceInfo && walletBalance < (priceInfo.total_price || priceInfo.price))}
+            disabled={loading || !priceInfo || walletBalance < (priceInfo.total_price || priceInfo.price)}
             className="w-full h-14 bg-[#0A0A0A] text-white rounded-none text-lg font-black tracking-tighter hover:bg-[#0A0A0A]/90 transition-colors shadow-lg disabled:bg-[#E4E4E7] disabled:text-[#A1A1AA]"
           >
-            {loading ? 'Processing...' : (priceInfo && walletBalance < (priceInfo.total_price || priceInfo.price)) ? 'Insufficient Balance' : 'Book Delivery Now'}
+            {loading ? 'Processing...' : !priceInfo ? 'Waiting for Quote' : walletBalance < (priceInfo.total_price || priceInfo.price) ? 'Insufficient Balance' : 'Book Delivery Now'}
           </Button>
         </div>
       </footer>
