@@ -25,7 +25,14 @@ describe('validateEnv()', () => {
   it('passes without throwing when all required vars are set', () => {
     process.env.REACT_APP_SUPABASE_URL = 'https://test.supabase.co';
     process.env.REACT_APP_SUPABASE_ANON_KEY = 'test-anon-key';
-    process.env.REACT_APP_PAYSTACK_PUBLIC_KEY = 'pk_test_key';
+
+    expect(() => validateEnv()).not.toThrow();
+  });
+
+  it('passes without throwing when Paystack key is missing', () => {
+    process.env.REACT_APP_SUPABASE_URL = 'https://test.supabase.co';
+    process.env.REACT_APP_SUPABASE_ANON_KEY = 'test-anon-key';
+    delete process.env.REACT_APP_PAYSTACK_PUBLIC_KEY;
 
     expect(() => validateEnv()).not.toThrow();
   });
@@ -33,7 +40,6 @@ describe('validateEnv()', () => {
   it('throws when REACT_APP_SUPABASE_URL is missing', () => {
     delete process.env.REACT_APP_SUPABASE_URL;
     process.env.REACT_APP_SUPABASE_ANON_KEY = 'test-anon-key';
-    process.env.REACT_APP_PAYSTACK_PUBLIC_KEY = 'pk_test_key';
 
     expect(() => validateEnv()).toThrow(/REACT_APP_SUPABASE_URL/);
   });
@@ -46,20 +52,12 @@ describe('validateEnv()', () => {
     expect(() => validateEnv()).toThrow(/REACT_APP_SUPABASE_ANON_KEY/);
   });
 
-  it('throws when REACT_APP_PAYSTACK_PUBLIC_KEY is missing', () => {
-    process.env.REACT_APP_SUPABASE_URL = 'https://test.supabase.co';
-    process.env.REACT_APP_SUPABASE_ANON_KEY = 'test-anon-key';
-    delete process.env.REACT_APP_PAYSTACK_PUBLIC_KEY;
-
-    expect(() => validateEnv()).toThrow(/REACT_APP_PAYSTACK_PUBLIC_KEY/);
-  });
-
   it('reports ALL missing vars in a single throw (not just the first one)', () => {
     delete process.env.REACT_APP_SUPABASE_URL;
     delete process.env.REACT_APP_SUPABASE_ANON_KEY;
     delete process.env.REACT_APP_PAYSTACK_PUBLIC_KEY;
 
-    expect(() => validateEnv()).toThrow(/Missing 3 required/);
+    expect(() => validateEnv()).toThrow(/Missing 2 required/);
   });
 
   it('throws when a var is set to an empty string', () => {

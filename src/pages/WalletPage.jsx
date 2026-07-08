@@ -1,13 +1,12 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import supabase from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
-import { usePaystackPayment } from 'react-paystack';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import {
   ArrowLeft, Wallet as WalletIcon, ArrowUp, ArrowDown,
-  Plus, CurrencyNgn
+  Plus, WarningCircle
 } from '@phosphor-icons/react';
 
 export default function WalletPage() {
@@ -46,63 +45,9 @@ export default function WalletPage() {
     fetchWallet();
   }, [fetchWallet]);
 
-  const config = useMemo(() => ({
-    reference: (new Date()).getTime().toString(),
-    email: user?.email || 'user@example.com',
-    amount: (parseFloat(topupAmount) || 0) * 100, // in kobo
-    publicKey: process.env.REACT_APP_PAYSTACK_PUBLIC_KEY,
-  }), [user?.email, topupAmount]);
-
-  const initializePayment = usePaystackPayment(config);
-
-  const onSuccess = async (reference) => {
-    try {
-      setLoading(true);
-      // Use internal RPC directly for rapid local testing without edge functions
-      const { data, error } = await supabase.rpc('topup_user_wallet_internal', {
-        p_user_id: user.id,
-        p_amount: parseFloat(topupAmount),
-        p_reference: reference.reference
-      });
-
-      if (error) {
-        throw new Error(error.message);
-      }
-
-      await fetchWallet();
-      setShowTopup(false);
-      setTopupAmount('');
-    } catch (err) {
-      console.error('Verification failed:', err);
-      alert('Payment added but verification failed: ' + err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const onClose = () => {
-    setLoading(false);
-    console.log('Payment modal closed');
-  };
-
   const handlePaystackTopup = () => {
-    const amt = parseFloat(topupAmount);
-    if (!amt || amt < 500) {
-      alert('Minimum top-up is ₦500');
-      return;
-    }
-
-    try {
-      setLoading(true);
-      initializePayment(onSuccess, onClose);
-    } catch (err) {
-      console.error('Paystack initialization failed:', err);
-      setLoading(false);
-      alert('Could not open payment gateway. Please check your internet connection.');
-    }
+    alert('Payment integration is currently disabled. Paystack will be re-enabled soon.');
   };
-
-  const quickAmounts = [1000, 2000, 5000, 10000];
 
   return (
     <div className="min-h-screen bg-white">
@@ -136,48 +81,24 @@ export default function WalletPage() {
           </Button>
         </div>
 
-        {/* Top-up Form */}
+        {/* Top-up Form - DISABLED FOR NOW */}
         {showTopup && (
-          <div className="border border-[#E4E4E7] p-6 mb-8">
-            <p className="text-xs uppercase tracking-[0.2em] font-medium text-[#52525B] mb-4">Add Funds</p>
-            
-            {/* Quick Amounts */}
-            <div className="grid grid-cols-4 gap-2 mb-4">
-              {quickAmounts.map(amt => (
-                <button
-                  key={amt}
-                  data-testid={`quick-amount-${amt}`}
-                  onClick={() => setTopupAmount(String(amt))}
-                  className={`border py-3 text-sm font-medium transition-colors ${
-                    topupAmount === String(amt)
-                      ? 'border-[#0A0A0A] bg-[#0A0A0A] text-white'
-                      : 'border-[#E4E4E7] hover:border-[#0A0A0A]'
-                  }`}
+          <div className="border border-[#FF5B22] bg-[#FF5B22]/5 p-6 mb-8">
+            <div className="flex gap-3 items-start">
+              <WarningCircle size={20} weight="bold" className="text-[#FF5B22] mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="text-sm font-semibold text-[#0A0A0A] mb-1">Payment Disabled</p>
+                <p className="text-xs text-[#52525B] mb-4">
+                  Paystack integration is temporarily disabled while we focus on the booking logic. Real payments will be re-enabled soon.
+                </p>
+                <Button
+                  onClick={() => setShowTopup(false)}
+                  className="text-xs h-8 px-3 bg-[#FF5B22] text-white rounded-sm font-medium hover:bg-[#FF5B22]/90"
                 >
-                  ₦{amt.toLocaleString()}
-                </button>
-              ))}
+                  Close
+                </Button>
+              </div>
             </div>
-
-            <div className="flex gap-2">
-              <Input
-                data-testid="topup-amount-input"
-                type="number"
-                value={topupAmount}
-                onChange={(e) => setTopupAmount(e.target.value)}
-                placeholder="Enter amount"
-                className="flex-1 border border-[#E4E4E7] rounded-none h-12"
-              />
-              <Button
-                data-testid="confirm-topup-btn"
-                onClick={handlePaystackTopup}
-                disabled={loading || !topupAmount}
-                className="h-12 px-6 bg-[#00A859] text-white rounded-sm font-medium hover:bg-[#00A859]/90"
-              >
-                {loading ? 'Processing...' : 'Pay with Paystack'}
-              </Button>
-            </div>
-            <p className="text-xs text-[#52525B] mt-2">Secure payments via Paystack. Minimum ₦500.</p>
           </div>
         )}
 

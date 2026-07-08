@@ -98,7 +98,7 @@ export default function LoginPage() {
       </div>
 
       {/* Right: Image */}
-      <div className="hidden md:block relative overflow-hidden">
+      <div className="relative overflow-hidden">
         <img
           src="https://images.unsplash.com/photo-1670506761128-2076c4c881da?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzF8MHwxfHNlYXJjaHwyfHxhZXJpYWwlMjB2aWV3JTIwY2l0eSUyMG1hcHxlbnwwfHx8fDE3NzYwMDA4NTl8MA&ixlib=rb-4.1.0&q=85"
           alt="City aerial view"
